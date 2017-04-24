@@ -1,0 +1,90 @@
+body {
+    font-size: 0;
+    background: #eee;
+}
+
+.container {
+    width: 700px;
+    height: 500px;
+    background: #fff;
+}
+
+.container__header,
+.container__row {
+    width: 100%;
+}
+.container__header {
+    height: 50px;
+    text-align: right;
+}
+
+.container__row {
+    height: 225px;
+    display: flex;
+}
+
+.container__title {
+    font-size: 20px;
+    text-transform: uppercase;
+    text-align: center;
+    display: inline-block;
+    background: #fff;
+}
+
+.container__title--horizontal {
+    height: 100%;
+    width: 325px;
+} 
+
+.container__title--vertical {
+    height: 225px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.vertical-text {
+    position: absolute;
+    transform: rotate(-90deg);
+}
+
+.vertical-text--not-important {
+    left: -53px;
+}
+
+.vertical-text--important {
+    left: -30px;
+}
+
+.horizontal-text {
+    position: relative;
+    top: 15px;
+}
+
+.container__quadrant {
+    height: 100%;
+    width:325px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tasks-area {
+    list-style: none;
+    width: 96%;
+    height: 95%;
+    border: 2px dashed #eee;       
+}
+
+.task {
+    display: inline-block;
+    margin-top: 5px;
+    margin-left: 10px;
+    background: rgb(179, 232, 250);
+    color: #000;
+    font-family: Helvetica, sans-serif;
+    font-size: 18px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 3px;
+}
