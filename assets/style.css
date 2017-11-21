@@ -62,29 +62,85 @@ body {
 }
 
 .container__quadrant {
-    height: 100%;
-    width:325px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: relative;
+  height: 100%;
+  width:325px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tasks-area {
-    list-style: none;
-    width: 96%;
-    height: 95%;
-    border: 2px dashed #eee;       
+  list-style: none;
+  width: 96%;
+  height: 95%;
+  border: 2px dashed #eee;       
 }
+
+.add-button {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 2px dashed rgba(74, 217, 236, 0.534);
+  border-radius: 20px;
+  opacity: 0;
+/* animation */
+  transition: opacity .3s ease,
+              background .3s ease,
+              border .3s ease;
+
+}
+
+.add-button:hover {
+  background: rgba(74, 217, 236, 0.281);
+  border: 2px solid rgba(74, 217, 236, 0.281);
+}
+/* 
+.button {
+  position: absolute;
+  opacity: 0;
+  transition: opacity .3s ease;
+} */
+
+.q-1 {
+  right: 10px;
+  bottom: 10px;
+}
+
+.q-2 {
+  left: 10px;
+  bottom: 10px;
+}
+
+.q-3 {
+  right: 10px;
+  top: 10px;
+}
+
+.q-4 {
+  right: 10px;
+  top: 10px;
+}
+
+/* .container__quadrant:hover .button {
+  opacity: 1;
+} */
+ 
+.container__quadrant:hover .add-button {
+  opacity: 1;
+} 
 
 .task {
     display: inline-block;
     margin-top: 5px;
     margin-left: 10px;
-    background: rgb(179, 232, 250);
+    /*background: rgb(179, 232, 250);*/
     color: #000;
     font-family: Helvetica, sans-serif;
     font-size: 18px;
     height: 24px;
     line-height: 24px;
+    border: 1px solid #a2eb98;
+    padding: 0 5px 0 5px;
     border-radius: 3px;
 }

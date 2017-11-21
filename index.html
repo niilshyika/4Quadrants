@@ -2,54 +2,62 @@
 <html lang="en">
 
 <head>
-    <meta charset='UTF-8'>
-    <title>4Quadrants</title>
-    <link rel="stylesheet" href="assets/reset.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.css">
-    <link rel="stylesheet" href="assets/style.css">
+  <meta charset='UTF-8'>
+  <title>4Quadrants</title>
+  <link rel="stylesheet" href="assets/reset.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.css">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 
 <body>
-    <div class='container'>
-        <div class='container__header'>
-            <div class='container__title container__title--horizontal'>
-                <span class='horizontal-text'>Urgent</span>
-            </div>
-            <div class='container__title container__title--horizontal'>
-                <span class='horizontal-text'>Not Urgent</span>
-            </div>
-        </div>
-        <div class='container__row'>
-            <div class='container__title container__title--vertical'>
-                <div class='vertical-text vertical-text--important'>Important</div>
-            </div>
-            <div class="container__quadrant">
-                <ul id='I' class="tasks-area">
-                </ul>
-            </div>
-            <div class="container__quadrant">
-                <ul id='II' class="tasks-area">
-                </ul>
-            </div>
-        </div>
-        <div class='container__row'>
-            <div class='container__title container__title--vertical'>
-                <div class='vertical-text vertical-text--not-important'>Not Important</div>
-            </div>
-            <div class="container__quadrant">
-                <div  id='III' class="tasks-area">
-                </div>
-            </div>
-            <div class="container__quadrant">
-                <ul  id='IV' class="tasks-area">
-                </ul>
-            </div>
-        </div>
-
+  <div id='main' class='container'>
+    <div class='container__header'>
+      <div class='container__title container__title--horizontal'>
+        <span class='horizontal-text'>Urgent</span>
+      </div>
+      <div class='container__title container__title--horizontal'>
+        <span class='horizontal-text'>Not Urgent</span>
+      </div>
+    </div>
+    <div class='container__row'>
+      <div class='container__title container__title--vertical'>
+        <div class='vertical-text vertical-text--important'>Important</div>
+      </div>
+      <div class="container__quadrant ">
+        <ul id='I' class="tasks-area">
+        </ul>
+        <!-- <svg class="button q-1">
+            <rect width="20" height="20"/>
+        </svg> -->
+        <div role="button" class='add-button q-1'></div>
+      </div>
+      <div class="container__quadrant">
+        <ul id='II' class="tasks-area ">
+        </ul>
+        <div role="button" class='add-button  q-2'></div>
+      </div>
+    </div>
+    <div class='container__row'>
+      <div class='container__title container__title--vertical'>
+        <div class='vertical-text vertical-text--not-important'>Not Important</div>
+      </div>
+      <div class="container__quadrant">
+        <ul id='III' class="tasks-area">
+        </ul>
+        <div role="button" class='add-button  q-3'>+</div>
+      </div>
+      <div class="container__quadrant">
+        <ul id='IV' class="tasks-area">
+        </ul>
+        <div role="button" class='add-button  q-4'></div>
+      </div>
     </div>
 
-    <script src='assets/dragula.js'></script>
-    <script src='index.js'></script>    
+  </div>
+
+  <!-- <script src='assets/dragula.js'></script> -->
+  <script src='assets/dragula.js'></script>
+  <script src='index.js'></script>
 </body>
 
 </html>
