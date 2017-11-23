@@ -2,7 +2,7 @@
     <span>Заниматься JS</span>
 </li>*/}
 
-let tasks = [
+let param = [
   {
     id: 0,
     text: 'Заниматься JS',
@@ -28,7 +28,10 @@ let tasks = [
     text: 'Waste time in the VK',
     type: 1
   },
-];
+]
+
+let tasks;
+let id;
 
 const containers = [
   document.querySelector('#I'),
@@ -38,38 +41,30 @@ const containers = [
 ];
 
 function init() {
-  setLocalStorage();
-  renderTasks();
+  // setLocalStorage();
+  tasks = getTasks();
+  id = tasks.length;
+  renderTasks(tasks);
   Array.from(document.getElementsByClassName('add-button'))
     .forEach(button => button.addEventListener('click', e => {
-      console.log(e.target.parent);
+      // console.log(e.target.previousElementSibling);
+      tasks.push(createTask(getTaskType(e.target.previousElementSibling.id)));
+      setLocalStorage();
+      renderTasks(tasks);
     }))
 
-  dragula(containers, {
-    // isContainer: function(el){
-    //     console.log(el);
-    // },
-    removeOnSpill: true,
-    accepts: function (el, target, source, sibling) {
-      // console.log(el);
-      // console.log(target);
-      // console.log(source);
-      // console.log(sibling);
-
-      return true; // elements can be dropped in any of the `containers` by default
-    },
-    // moves: function (el, source, handle, sibling) {
-    // console.log(source);
-    // console.log(handle);
-    // console.log(sibling);
-
-    // return true; 
-    //   },
-  });
+  dragula(containers)
+    .on('drop', (element, target, source) => {
+      if (target.id !== source.id) {
+        changeTaskType(element.dataset['id'], target.id)
+      }
+    })
 }
 
-function setLocalStorage() {
-  window.localStorage.setItem('tasks', JSON.stringify(tasks));
+
+function setLocalStorage(params) {
+  let args = tasks.length ? tasks : params;
+  window.localStorage.setItem('tasks', JSON.stringify(args));
 }
 
 function getTasks() {
@@ -82,20 +77,56 @@ function makeTaskNode(obj) {
   taskSpan.className = 'task';
   taskSpan.innerText = obj.text;
   taskCont.appendChild(taskSpan);
+  taskCont.dataset['id'] = obj.id;
 
   return taskCont;
 }
 
-function renderTasks() {
-  let tasks = getTasks();
+function renderTasks(tasks) {
   !tasks.length || tasks.forEach(task => {
     containers[task.type].appendChild(makeTaskNode(task));
   });
 }
 
-function addTask(e) {
-  // tasks.push()
-  alert(e.target);
+function changeTaskType(elementId, targetContainerId) {
+  let type = getTaskType(targetContainerId);
+  tasks.map(elem => {
+    if (elem.id === +elementId) elem.type = type;
+    return elem;
+  });
+
+  setLocalStorage();
+  // renderTasks();
+  tasks = getTasks();
+}
+
+function getTaskType(containerId) {
+  let type;
+  switch (containerId) {
+    case 'I':
+      type = 0;
+      break;
+    case 'II':
+      type = 1;
+      break;
+    case 'III':
+      type = 2;
+      break;
+    case 'IV':
+      type = 3;
+      break;
+    default:
+      break;
+  }
+  return type;
+}
+
+function createTask(type) {
+  return {
+    id: id++,
+    text: 'Shalam',
+    type: type
+  }
 }
 
 init();

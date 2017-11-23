@@ -102,22 +102,22 @@ body {
   transition: opacity .3s ease;
 } */
 
-.q-1 {
+.q-0 {
   right: 10px;
   bottom: 10px;
 }
 
-.q-2 {
+.q-1 {
   left: 10px;
   bottom: 10px;
 }
 
-.q-3 {
+.q-2 {
   right: 10px;
   top: 10px;
 }
 
-.q-4 {
+.q-3 {
   right: 10px;
   top: 10px;
 }
