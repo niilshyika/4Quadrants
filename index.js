@@ -30,26 +30,27 @@ let param = [
   },
 ]
 
-let tasks;
 let id;
 
 const containers = [
+  // сделать data-id
   document.querySelector('#I'),
   document.querySelector('#II'),
   document.querySelector('#III'),
   document.querySelector('#IV')
 ];
 
+
 function init() {
   // setLocalStorage();
-  tasks = getTasks();
-  id = tasks.length;
+  const tasks = getTasks();
   renderTasks(tasks);
   Array.from(document.getElementsByClassName('add-button'))
-    .forEach(button => button.addEventListener('click', e => {
+    .forEach(button => button.addEventListener('click', ({target: {previousElementSibling: {id}}}) => {
       // console.log(e.target.previousElementSibling);
-      tasks.push(createTask(getTaskType(e.target.previousElementSibling.id)));
+      tasks.push(createTask(getTaskType(id)));
       setLocalStorage();
+      // setLocalStorage(tasks.push(createTask(id)))
       renderTasks(tasks);
     }))
 
@@ -71,35 +72,36 @@ function getTasks() {
   return JSON.parse(window.localStorage.getItem('tasks')) || [];
 }
 
-function makeTaskNode(obj) {
-  let taskCont = document.createElement('li');
-  let taskSpan = document.createElement('span')
+function makeTaskNode({text, id}) {
+  const taskCont = document.createElement('li');
+  const taskSpan = document.createElement('span')
+
   taskSpan.className = 'task';
-  taskSpan.innerText = obj.text;
+  taskSpan.innerText = text;
+
   taskCont.appendChild(taskSpan);
-  taskCont.dataset['id'] = obj.id;
+  taskCont.dataset['id'] = id;
 
   return taskCont;
 }
 
 function renderTasks(tasks) {
-  !tasks.length || tasks.forEach(task => {
+  tasks.forEach(task => {
     containers[task.type].appendChild(makeTaskNode(task));
   });
 }
 
 function changeTaskType(elementId, targetContainerId) {
   let type = getTaskType(targetContainerId);
-  tasks.map(elem => {
+  getTasks().map(elem => {
     if (elem.id === +elementId) elem.type = type;
     return elem;
   });
 
   setLocalStorage();
-  // renderTasks();
-  tasks = getTasks();
 }
 
+//нахуй эту штуку отсюда
 function getTaskType(containerId) {
   let type;
   switch (containerId) {
@@ -123,10 +125,58 @@ function getTaskType(containerId) {
 
 function createTask(type) {
   return {
-    id: id++,
+    id: Date.now(),
     text: 'Shalam',
-    type: type
+    type
   }
 }
 
 init();
+
+// ES 6
+// Simplu\yfy
+//structure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var tasks;
+
+const getTasks = () => [1,2,3]
+
+const changeTasks = () => {
+  tasks = getTasks().map()
+}
+
+const deleteTask = () => {
+  tasks = tasks.filter()
+}
+
+tasks = [1,2,3,4]
+
+
+changeTasks()
+deleteTask()
+
+
+getter() {
+  return 123
+}
+
+setter() {
+  _set(value || 1)
+}
