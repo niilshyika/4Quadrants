@@ -30,29 +30,20 @@ let param = [
   },
 ]
 
-let id;
-
 const containers = [
   // сделать data-id
-  document.querySelector('#I'),
-  document.querySelector('#II'),
-  document.querySelector('#III'),
-  document.querySelector('#IV')
+  document.getElementById('0'),
+  document.getElementById('1'),
+  document.getElementById('2'),
+  document.getElementById('3')
 ];
 
+const init = () => {
+  let tasks = getTasks() || [];
 
-function init() {
-  // setLocalStorage();
-  const tasks = getTasks();
   renderTasks(tasks);
-  Array.from(document.getElementsByClassName('add-button'))
-    .forEach(button => button.addEventListener('click', ({target: {previousElementSibling: {id}}}) => {
-      // console.log(e.target.previousElementSibling);
-      tasks.push(createTask(getTaskType(id)));
-      setLocalStorage();
-      // setLocalStorage(tasks.push(createTask(id)))
-      renderTasks(tasks);
-    }))
+
+  addEventListenersToButtons();
 
   dragula(containers)
     .on('drop', (element, target, source) => {
@@ -60,19 +51,33 @@ function init() {
         changeTaskType(element.dataset['id'], target.id)
       }
     })
-}
+};
+
+const addEventListenersToButtons = () => {
+  let tasks = getTasks();
+
+  // getElementsByClassName returns pseudo array.  
+  Array.from(document.getElementsByClassName('add-button'))
+    .forEach(button => button.addEventListener('click', ({ target: { previousElementSibling: { id } } }) => {
+      tasks.push(createTask(id));
+
+      localStorage['tasks'] = JSON.stringify(tasks);
+
+      renderTasks(tasks);
+    }))
+};
 
 
-function setLocalStorage(params) {
-  let args = tasks.length ? tasks : params;
-  window.localStorage.setItem('tasks', JSON.stringify(args));
-}
+// function setLocalStorage(params) {
+//   let args = tasks.length ? tasks : params;
+//   LocalStorage.setItem('tasks', JSON.stringify(args));
+// }
 
-function getTasks() {
-  return JSON.parse(window.localStorage.getItem('tasks')) || [];
-}
+const getTasks = () => {
+  return JSON.parse(localStorage['tasks']);
+};
 
-function makeTaskNode({text, id}) {
+const makeTaskNode = ({ text, id }) => {
   const taskCont = document.createElement('li');
   const taskSpan = document.createElement('span')
 
@@ -83,53 +88,34 @@ function makeTaskNode({text, id}) {
   taskCont.dataset['id'] = id;
 
   return taskCont;
-}
+};
 
-function renderTasks(tasks) {
+const renderTasks = (tasks) => {
+  containers.forEach(container =>{
+    container.innerHTML = '';
+  });
+
   tasks.forEach(task => {
     containers[task.type].appendChild(makeTaskNode(task));
   });
-}
+};
 
-function changeTaskType(elementId, targetContainerId) {
-  let type = getTaskType(targetContainerId);
-  getTasks().map(elem => {
-    if (elem.id === +elementId) elem.type = type;
+const changeTaskType = (elementId, targetContainerId) => {
+  let tasks = getTasks().map(elem => {
+    if (elem.id === +elementId) elem.type = +targetContainerId;
     return elem;
   });
 
-  setLocalStorage();
-}
+  localStorage['tasks'] = JSON.stringify(tasks);
+};
 
-//нахуй эту штуку отсюда
-function getTaskType(containerId) {
-  let type;
-  switch (containerId) {
-    case 'I':
-      type = 0;
-      break;
-    case 'II':
-      type = 1;
-      break;
-    case 'III':
-      type = 2;
-      break;
-    case 'IV':
-      type = 3;
-      break;
-    default:
-      break;
-  }
-  return type;
-}
-
-function createTask(type) {
+const createTask = (containerId) => {
   return {
     id: Date.now(),
     text: 'Shalam',
-    type
+    type: +containerId
   }
-}
+};
 
 init();
 
@@ -154,29 +140,29 @@ init();
 
 
 
-var tasks;
+// var tasks;
 
-const getTasks = () => [1,2,3]
+// const getTasks = () => [1,2,3]
 
-const changeTasks = () => {
-  tasks = getTasks().map()
-}
+// const changeTasks = () => {
+//   tasks = getTasks().map()
+// }
 
-const deleteTask = () => {
-  tasks = tasks.filter()
-}
+// const deleteTask = () => {
+//   tasks = tasks.filter()
+// }
 
-tasks = [1,2,3,4]
-
-
-changeTasks()
-deleteTask()
+// tasks = [1,2,3,4]
 
 
-getter() {
-  return 123
-}
+// changeTasks()
+// deleteTask()
 
-setter() {
-  _set(value || 1)
-}
+
+// getter() {
+//   return 123
+// }
+
+// setter() {
+//   _set(value || 1)
+// }
