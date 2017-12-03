@@ -1,9 +1,10 @@
-{/*<li class="task">
-    <span>Заниматься JS</span>
-</li>*/}
+{
+  /*<li class="task">
+      <span>Заниматься JS</span>
+  </li>*/
+}
 
-let param = [
-  {
+let param = [{
     id: 0,
     text: 'Заниматься JS',
     type: 1
@@ -31,7 +32,6 @@ let param = [
 ]
 
 const containers = [
-  // сделать data-id
   document.getElementById('0'),
   document.getElementById('1'),
   document.getElementById('2'),
@@ -39,7 +39,7 @@ const containers = [
 ];
 
 const init = () => {
-  let tasks = getTasks() || [];
+  let tasks = getTasks();
 
   renderTasks(tasks);
 
@@ -54,30 +54,50 @@ const init = () => {
 };
 
 const addEventListenersToButtons = () => {
-  let tasks = getTasks();
-
+  let dialogIsOpened = false;
+  
+  const openEditDialog = (containerId) => {
+    const form = document.createElement('form');
+    const input = document.createElement('input');
+  
+    input.className = 'edit-input';
+    input.name = 'edit-input';
+    input.autofocus = true;
+    form.appendChild(input);
+  
+    form.addEventListener('submit', (target) => {
+      let tasks = getTasks();
+  
+      tasks.push(createTask(target.target[0].value, containerId));
+      localStorage['tasks'] = JSON.stringify(tasks);
+      renderTasks(tasks);
+      dialogIsOpened = false;
+    })
+  
+    containers[containerId].appendChild(form)
+  };
+  
   // getElementsByClassName returns pseudo array.  
   Array.from(document.getElementsByClassName('add-button'))
-    .forEach(button => button.addEventListener('click', ({ target: { previousElementSibling: { id } } }) => {
-      tasks.push(createTask(id));
-
-      localStorage['tasks'] = JSON.stringify(tasks);
-
-      renderTasks(tasks);
+    .forEach(button => button.addEventListener('click', ({target:{previousElementSibling:{ id }}}) => {
+      if (!dialogIsOpened){
+        openEditDialog(id);
+        dialogIsOpened = !dialogIsOpened;        
+      }
     }))
 };
 
-
-// function setLocalStorage(params) {
-//   let args = tasks.length ? tasks : params;
-//   LocalStorage.setItem('tasks', JSON.stringify(args));
-// }
-
-const getTasks = () => {
-  return JSON.parse(localStorage['tasks']);
+const clearAll = () => {
+  localStorage.clear();
+  renderTasks();
 };
 
-const makeTaskNode = ({ text, id }) => {
+
+const getTasks = () => {
+  return JSON.parse(localStorage['tasks'] || '[]');
+};
+
+const makeTaskNode = ({text,id}) => {
   const taskCont = document.createElement('li');
   const taskSpan = document.createElement('span')
 
@@ -91,11 +111,11 @@ const makeTaskNode = ({ text, id }) => {
 };
 
 const renderTasks = (tasks) => {
-  containers.forEach(container =>{
+  containers.forEach(container => {
     container.innerHTML = '';
   });
 
-  tasks.forEach(task => {
+  !tasks || tasks.forEach(task => {
     containers[task.type].appendChild(makeTaskNode(task));
   });
 };
@@ -109,60 +129,12 @@ const changeTaskType = (elementId, targetContainerId) => {
   localStorage['tasks'] = JSON.stringify(tasks);
 };
 
-const createTask = (containerId) => {
+const createTask = (text, containerId) => {
   return {
     id: Date.now(),
-    text: 'Shalam',
+    text,
     type: +containerId
-  }
+  };
 };
 
 init();
-
-// ES 6
-// Simplu\yfy
-//structure
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// var tasks;
-
-// const getTasks = () => [1,2,3]
-
-// const changeTasks = () => {
-//   tasks = getTasks().map()
-// }
-
-// const deleteTask = () => {
-//   tasks = tasks.filter()
-// }
-
-// tasks = [1,2,3,4]
-
-
-// changeTasks()
-// deleteTask()
-
-
-// getter() {
-//   return 123
-// }
-
-// setter() {
-//   _set(value || 1)
-// }
