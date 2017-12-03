@@ -44,6 +44,7 @@ const init = () => {
   renderTasks(tasks);
 
   addEventListenersToButtons();
+  // console.log(chrome.storage.local.get('phasersTo',(items) => console.log(items)) );
 
   dragula(containers)
     .on('drop', (element, target, source) => {
@@ -69,7 +70,9 @@ const addEventListenersToButtons = () => {
       let tasks = getTasks();
   
       tasks.push(createTask(target.target[0].value, containerId));
-      localStorage['tasks'] = JSON.stringify(tasks);
+      // chrome.storage.local.set({ 'tasks': tasks});
+  
+      // localStorage['tasks'] = JSON.stringify(tasks);
       renderTasks(tasks);
       dialogIsOpened = false;
     })
@@ -88,13 +91,20 @@ const addEventListenersToButtons = () => {
 };
 
 const clearAll = () => {
-  localStorage.clear();
+  // localStorage.clear();
+  chrome.storage.local.clear();
   renderTasks();
 };
 
 
 const getTasks = () => {
-  return JSON.parse(localStorage['tasks'] || '[]');
+  debugger;
+  let tasks;
+  chrome.storage.local.get(items =>{
+    tasks = items || []
+  } );
+  // return JSON.parse(localStorage['tasks'] || '[]');
+  return tasks;
 };
 
 const makeTaskNode = ({text,id}) => {
@@ -126,7 +136,9 @@ const changeTaskType = (elementId, targetContainerId) => {
     return elem;
   });
 
-  localStorage['tasks'] = JSON.stringify(tasks);
+
+  chrome.storage.local.set({tasks: tasks});
+  // localStorage['tasks'] = JSON.stringify(tasks);
 };
 
 const createTask = (text, containerId) => {
