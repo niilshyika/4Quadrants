@@ -4,7 +4,8 @@
   </li>*/
 }
 
-let param = [{
+let param = [
+  {
     id: 0,
     text: 'Заниматься JS',
     type: 1
@@ -29,7 +30,7 @@ let param = [{
     text: 'Waste time in the VK',
     type: 1
   },
-]
+];
 
 const containers = [
   document.getElementById('0'),
@@ -39,13 +40,10 @@ const containers = [
 ];
 
 const init = () => {
-  let tasks = getTasks();
-
-  renderTasks(tasks);
-
+  getTasks().then(({ tasks }) => {
+    renderTasks(tasks);
+  });
   addEventListenersToButtons();
-  // console.log(chrome.storage.local.get('phasersTo',(items) => console.log(items)) );
-
   dragula(containers)
     .on('drop', (element, target, source) => {
       if (target.id !== source.id) {
@@ -56,36 +54,38 @@ const init = () => {
 
 const addEventListenersToButtons = () => {
   let dialogIsOpened = false;
-  
+
   const openEditDialog = (containerId) => {
     const form = document.createElement('form');
     const input = document.createElement('input');
-  
+
     input.className = 'edit-input';
     input.name = 'edit-input';
     input.autofocus = true;
     form.appendChild(input);
-  
+
     form.addEventListener('submit', (target) => {
-      let tasks = getTasks();
-  
-      tasks.push(createTask(target.target[0].value, containerId));
-      // chrome.storage.local.set({ 'tasks': tasks});
-  
-      // localStorage['tasks'] = JSON.stringify(tasks);
-      renderTasks(tasks);
-      dialogIsOpened = false;
+      debugger;
+
+      getTasks().then(({ tasks }) => {
+        tasks.push(createTask(target.target[0].value, containerId));
+        // chrome.storage.local.set({ 'tasks': tasks});
+
+        // localStorage['tasks'] = JSON.stringify(tasks);
+        renderTasks(tasks);
+        dialogIsOpened = false;
+      });
     })
-  
+
     containers[containerId].appendChild(form)
   };
-  
+
   // getElementsByClassName returns pseudo array.  
   Array.from(document.getElementsByClassName('add-button'))
-    .forEach(button => button.addEventListener('click', ({target:{previousElementSibling:{ id }}}) => {
-      if (!dialogIsOpened){
+    .forEach(button => button.addEventListener('click', ({ target: { previousElementSibling: { id } } }) => {
+      if (!dialogIsOpened) {
         openEditDialog(id);
-        dialogIsOpened = !dialogIsOpened;        
+        dialogIsOpened = !dialogIsOpened;
       }
     }))
 };
@@ -97,17 +97,13 @@ const clearAll = () => {
 };
 
 
-const getTasks = () => {
-  debugger;
-  let tasks;
-  chrome.storage.local.get(items =>{
-    tasks = items || []
-  } );
-  // return JSON.parse(localStorage['tasks'] || '[]');
-  return tasks;
-};
+const getTasks = () => new Promise((resolve) => {
+  chrome.storage.local.get(items => {
+    resolve(items);
+  });
+});
 
-const makeTaskNode = ({text,id}) => {
+const makeTaskNode = ({ text, id }) => {
   const taskCont = document.createElement('li');
   const taskSpan = document.createElement('span')
 
@@ -131,14 +127,16 @@ const renderTasks = (tasks) => {
 };
 
 const changeTaskType = (elementId, targetContainerId) => {
-  let tasks = getTasks().map(elem => {
-    if (elem.id === +elementId) elem.type = +targetContainerId;
-    return elem;
-  });
-
-
-  chrome.storage.local.set({tasks: tasks});
-  // localStorage['tasks'] = JSON.stringify(tasks);
+  debugger;
+  getTasks().then(({ tasks }) => {
+    //здесь происходит чертовщина будто map меняет исходный array
+    tasks.map(elem => {
+      if (elem.id === +elementId) elem.type = +targetContainerId;
+      return elem;
+    });
+    //здесь уже измененный 
+    chrome.storage.local.set({ tasks });
+  })
 };
 
 const createTask = (text, containerId) => {
