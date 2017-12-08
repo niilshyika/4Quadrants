@@ -44,11 +44,14 @@ const init = () => {
     renderTasks(tasks);
   });
   addEventListenersToButtons();
-  dragula(containers)
+  dragula(containers, { removeOnSpill: true })
     .on('drop', (element, target, source) => {
       if (target.id !== source.id) {
-        changeTaskType(element.dataset['id'], target.id)
+        (element.dataset['id'], target.id)
       }
+    })
+    .on('remove', (element) => {
+      revomeTask(element.dataset.id);
     })
 };
 
@@ -61,23 +64,26 @@ const addEventListenersToButtons = () => {
 
     input.className = 'edit-input';
     input.name = 'edit-input';
-    input.autofocus = true;
     form.appendChild(input);
 
     form.addEventListener('submit', (target) => {
       debugger;
+      target.preventDefault();
 
       getTasks().then(({ tasks }) => {
-        tasks.push(createTask(target.target[0].value, containerId));
+        let newList = tasks || []; 
+        newList.push(createTask(target.target[0].value, containerId));
         // chrome.storage.local.set({ 'tasks': tasks});
 
         // localStorage['tasks'] = JSON.stringify(tasks);
-        renderTasks(tasks);
+        chrome.storage.local.set({ tasks: newList });
+        renderTasks(newList);
         dialogIsOpened = false;
       });
     })
 
     containers[containerId].appendChild(form)
+    input.focus();    
   };
 
   // getElementsByClassName returns pseudo array.  
@@ -88,10 +94,11 @@ const addEventListenersToButtons = () => {
         dialogIsOpened = !dialogIsOpened;
       }
     }))
+
+    document.getElementsByClassName('container__clear-button')[0].addEventListener('click', clearAll);
 };
 
 const clearAll = () => {
-  // localStorage.clear();
   chrome.storage.local.clear();
   renderTasks();
 };
@@ -102,6 +109,12 @@ const getTasks = () => new Promise((resolve) => {
     resolve(items);
   });
 });
+
+const removeTask = (id) => {
+  getTasks().then(({ tasks }) => {
+    
+  });
+};
 
 const makeTaskNode = ({ text, id }) => {
   const taskCont = document.createElement('li');
