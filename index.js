@@ -1,36 +1,12 @@
-{
-  /*<li class="task">
-      <span>Заниматься JS</span>
-  </li>*/
-}
-
-let param = [
-  {
-    id: 0,
-    text: 'Заниматься JS',
-    type: 1
-  },
-  {
-    id: 1,
-    text: 'Web Purple (create speaker modal)',
-    type: 0
-  },
-  {
-    id: 2,
-    text: 'Issues ( work )',
-    type: 0
-  },
-  {
-    id: 3,
-    text: '"The nature of code"',
-    type: 1
-  },
-  {
-    id: 4,
-    text: 'Waste time in the VK',
-    type: 1
-  },
-];
+/* 
+TODO:
+1) если еще нет задач, то выводить "Есть свободное время? Может лучше пересмотреть свои дела и создать новые задачки?"
+и сделать кнопку на нотификашке, которая откроет расширение и начнет добавлять новую задачку. Может быть и не 
+выводить нотификашку когда нет задач.
+2) Сделать options page, в которой можно задавать паттерны urls
+3) Сделать редактирование задачи double click на задачу
+4) Сделать красивое создание новых тасок
+*/
 
 const containers = [
   document.getElementById('0'),
@@ -43,12 +19,16 @@ const init = () => {
   getTasks().then(({ tasks }) => {
     renderTasks(tasks);
   });
+
   addEventListenersToButtons();
-  dragula(containers)
+  dragula(containers, { removeOnSpill: true })
     .on('drop', (element, target, source) => {
       if (target.id !== source.id) {
-        changeTaskType(element.dataset['id'], target.id)
+        (element.dataset['id'], target.id)
       }
+    })
+    .on('remove', element => {
+      removeTask(element.dataset.id);
     })
 };
 
@@ -61,23 +41,26 @@ const addEventListenersToButtons = () => {
 
     input.className = 'edit-input';
     input.name = 'edit-input';
-    input.autofocus = true;
     form.appendChild(input);
 
     form.addEventListener('submit', (target) => {
       debugger;
+      target.preventDefault();
 
       getTasks().then(({ tasks }) => {
-        tasks.push(createTask(target.target[0].value, containerId));
+        let newList = tasks || [];
+        newList.push(createTask(target.target[0].value, containerId));
         // chrome.storage.local.set({ 'tasks': tasks});
 
         // localStorage['tasks'] = JSON.stringify(tasks);
-        renderTasks(tasks);
+        chrome.storage.local.set({ tasks: newList });
+        renderTasks(newList);
         dialogIsOpened = false;
       });
     })
 
     containers[containerId].appendChild(form)
+    input.focus();
   };
 
   // getElementsByClassName returns pseudo array.  
@@ -88,20 +71,28 @@ const addEventListenersToButtons = () => {
         dialogIsOpened = !dialogIsOpened;
       }
     }))
+
+  document.getElementsByClassName('container__clear-button')[0].addEventListener('click', clearAll);
 };
 
 const clearAll = () => {
-  // localStorage.clear();
   chrome.storage.local.clear();
   renderTasks();
 };
-
 
 const getTasks = () => new Promise((resolve) => {
   chrome.storage.local.get(items => {
     resolve(items);
   });
 });
+
+const removeTask = (id) => {
+  getTasks().then(({ tasks }) => {
+    const newList = tasks.filter(task => task.id !== +id)
+    renderTasks(newList);
+    chrome.storage.local.set({ tasks: newList });
+  });
+};
 
 const makeTaskNode = ({ text, id }) => {
   const taskCont = document.createElement('li');
@@ -127,15 +118,12 @@ const renderTasks = (tasks) => {
 };
 
 const changeTaskType = (elementId, targetContainerId) => {
-  debugger;
   getTasks().then(({ tasks }) => {
-    //здесь происходит чертовщина будто map меняет исходный array
-    tasks.map(elem => {
+    let newList = tasks.map(elem => {
       if (elem.id === +elementId) elem.type = +targetContainerId;
       return elem;
     });
-    //здесь уже измененный 
-    chrome.storage.local.set({ tasks });
+    chrome.storage.local.set({ tasks: newList });
   })
 };
 
