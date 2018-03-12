@@ -44,15 +44,12 @@ const addEventListenersToButtons = () => {
     form.appendChild(input);
 
     form.addEventListener('submit', (target) => {
-      debugger;
       target.preventDefault();
 
       getTasks().then(({ tasks }) => {
         let newList = tasks || [];
         newList.push(createTask(target.target[0].value, containerId));
-        // chrome.storage.local.set({ 'tasks': tasks});
 
-        // localStorage['tasks'] = JSON.stringify(tasks);
         chrome.storage.local.set({ tasks: newList });
         renderTasks(newList);
         dialogIsOpened = false;
@@ -96,13 +93,37 @@ const removeTask = (id) => {
 
 const makeTaskNode = ({ text, id }) => {
   const taskCont = document.createElement('li');
-  const taskSpan = document.createElement('span')
+  taskCont.className = 'task-container';
+  const taskSpan = document.createElement('div');
 
   taskSpan.className = 'task';
   taskSpan.innerText = text;
 
   taskCont.appendChild(taskSpan);
   taskCont.dataset['id'] = id;
+  taskCont.addEventListener('dblclick', e=>{
+    const id = +e.target.parentElement['dataset'].id;
+
+    const form = document.createElement('form');
+    const input = document.createElement('input');
+
+    input.className = 'edit-input';
+    input.name = 'edit-input';
+    form.appendChild(input);
+    form.addEventListener('submit', target => {
+      target.preventDefault();
+
+      getTasks().then(({ tasks }) => {
+        let newList = tasks || [];
+        newList.push(createTask(target.target[0].value, containerId));
+
+        chrome.storage.local.set({ tasks: newList });
+        renderTasks(newList);
+        dialogIsOpened = false;
+      });
+    })
+    e.target.appendChild(form);
+  })
 
   return taskCont;
 };

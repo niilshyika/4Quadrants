@@ -147,6 +147,7 @@ body {
 
 .task {
     display: inline-block;
+    position: relative;
     margin-top: 5px;
     margin-left: 10px;
     /*background: rgb(179, 232, 250);*/
@@ -158,10 +159,18 @@ body {
     border: 1px solid #a2eb98;
     padding: 0 5px 0 5px;
     border-radius: 3px;
+    text-align: center;
+}
+
+.task-container {
+    position: relative;
 }
 
 .edit-input {
     position: absolute;
-    top: 45%;
-    left: 45%;
+    top:5px;
+    left:5px;
+    width: 90%;
+    border: none;
+    outline: none;
 }
